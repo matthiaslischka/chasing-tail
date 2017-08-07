@@ -1,65 +1,59 @@
 var game = {};
 
 var cursors;
-
 var snakeHead;
-var snakeSection = new Array();
-var snakePath = new Array();
-var numSnakeSections = 30;
-var snakeSpacer = 12;
+var playerPosition;
+var direction;
+var snakeSections = new Array();
+var directions = new Array();
 
 game.create = function () {
   game.physics.startSystem(Phaser.Physics.ARCADE);
-
   game.world.setBounds(0, 0, 800, 600);
-
   cursors = game.input.keyboard.createCursorKeys();
 
   snakeHead = game.add.sprite(400, 300, 'mushroom');
-  snakeHead.anchor.setTo(0.5, 0.5);
 
-  game.physics.enable(snakeHead, Phaser.Physics.ARCADE);
+  playerPosition = new Phaser.Point(400, 300);
+  direction = new Phaser.Point(0, 0);
 
-  for (var i = 1; i <= numSnakeSections - 1; i++) {
-    snakeSection[i] = game.add.sprite(400, 300, 'mushroom');
-    snakeSection[i].anchor.setTo(0.5, 0.5);
+  for (var i = 0; i <= 10; i++) {
+    snakeSections[i] = game.add.sprite(400, 300, 'mushroom');
+    snakeSections[i].x = 400;
+    snakeSections[i].y = 300;
+    directions[i] = new Phaser.Point(0,0);
   }
 
-  for (var i = 0; i <= numSnakeSections * snakeSpacer; i++) {
-    snakePath[i] = new Phaser.Point(400, 300);
-  }
-
+  game.time.events.loop(Phaser.Timer.QUARTER, game.move, this);
 };
 
 game.update = function () {
-  snakeHead.body.velocity.setTo(0, 0);
-  snakeHead.body.angularVelocity = 0;
-
   if (cursors.up.isDown) {
-    snakeHead.angle = -90;
+    direction = new Phaser.Point(0, -1);
   }
   else if (cursors.down.isDown) {
-    snakeHead.angle = 90;
+    direction = new Phaser.Point(0, 1);
   }
   else if (cursors.left.isDown) {
-    snakeHead.angle = -180;
+    direction = new Phaser.Point(-1, 0);
   }
   else if (cursors.right.isDown) {
-    snakeHead.angle = 0;
+    direction = new Phaser.Point(1, 0);
   }
-  snakeHead.body.velocity.copyFrom(game.physics.arcade.velocityFromAngle(snakeHead.angle, 300));
+};
 
-  var part = snakePath.pop();
+game.move = function () {
+  playerPosition.add(direction.x * 64, direction.y * 64);
+  snakeHead.x = playerPosition.x;
+  snakeHead.y = playerPosition.y;
 
-  part.setTo(snakeHead.x, snakeHead.y);
+  directions.pop();
+  directions.unshift(new Phaser.Point(direction.x, direction.y));
 
-  snakePath.unshift(part);
-
-  for (var i = 1; i <= numSnakeSections - 1; i++) {
-    snakeSection[i].x = (snakePath[i * snakeSpacer]).x;
-    snakeSection[i].y = (snakePath[i * snakeSpacer]).y;
+  for (var i = 0; i <= 10; i++) {
+    snakeSections[i].x = snakeSections[i].x + (directions[i].x * 64); 
+    snakeSections[i].y = snakeSections[i].y + (directions[i].y * 64); 
   }
-
 };
 
 module.exports = game;
