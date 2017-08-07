@@ -8,11 +8,12 @@ var snakeSections = new Array();
 var directions = new Array();
 
 game.create = function () {
-  game.physics.startSystem(Phaser.Physics.ARCADE);
   game.world.setBounds(0, 0, 800, 600);
+  game.physics.startSystem(Phaser.Physics.ARCADE);
   cursors = game.input.keyboard.createCursorKeys();
 
   snakeHead = game.add.sprite(400, 300, 'mushroom');
+  this.physics.arcade.enable(snakeHead);
 
   playerPosition = new Phaser.Point(400, 300);
   direction = new Phaser.Point(0, 0);
@@ -21,13 +22,15 @@ game.create = function () {
     snakeSections[i] = game.add.sprite(400, 300, 'mushroom');
     snakeSections[i].x = 400;
     snakeSections[i].y = 300;
-    directions[i] = new Phaser.Point(0,0);
+    directions[i] = new Phaser.Point(0, 0);
+    this.physics.arcade.enable(snakeSections[i]);
   }
 
   game.time.events.loop(Phaser.Timer.QUARTER, game.move, this);
 };
 
 game.update = function () {
+
   if (cursors.up.isDown) {
     direction = new Phaser.Point(0, -1);
   }
@@ -43,17 +46,23 @@ game.update = function () {
 };
 
 game.move = function () {
-  playerPosition.add(direction.x * 64, direction.y * 64);
+
+  playerPosition.add(direction.x * 65, direction.y * 65);
   snakeHead.x = playerPosition.x;
   snakeHead.y = playerPosition.y;
 
-  directions.pop();
-  directions.unshift(new Phaser.Point(direction.x, direction.y));
+  if (direction.x != 0 || direction.y != 0)
+    if (this.physics.arcade.collide(snakeHead, snakeSections)) {
+      alert("Aua");
+    }
 
   for (var i = 0; i <= 10; i++) {
-    snakeSections[i].x = snakeSections[i].x + (directions[i].x * 64); 
-    snakeSections[i].y = snakeSections[i].y + (directions[i].y * 64); 
+    snakeSections[i].x = snakeSections[i].x + (directions[i].x * 65);
+    snakeSections[i].y = snakeSections[i].y + (directions[i].y * 65);
   }
+
+  directions.pop();
+  directions.unshift(new Phaser.Point(direction.x, direction.y));
 };
 
 module.exports = game;
