@@ -1,7 +1,6 @@
 var preloader = {};
 
 preloader.preload = function () {
-  this.game.load.image('logo', 'images/phaser.png');
   this.game.load.image('mushroom', 'images/mushroom.png')
 };
 

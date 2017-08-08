@@ -6,6 +6,7 @@ var playerPosition;
 var direction;
 var snakeSections = new Array();
 var directions = new Array();
+var numberOfSnakeSections;
 
 game.create = function () {
   game.world.setBounds(0, 0, 800, 600);
@@ -17,8 +18,9 @@ game.create = function () {
 
   playerPosition = new Phaser.Point(400, 300);
   direction = new Phaser.Point(0, 0);
+  numberOfSnakeSections = 2;
 
-  for (var i = 0; i <= 10; i++) {
+  for (var i = 0; i < numberOfSnakeSections; i++) {
     snakeSections[i] = game.add.sprite(400, 300, 'mushroom');
     snakeSections[i].x = 400;
     snakeSections[i].y = 300;
@@ -56,7 +58,7 @@ game.move = function () {
       alert("Aua");
     }
 
-  for (var i = 0; i <= 10; i++) {
+  for (var i = 0; i < numberOfSnakeSections; i++) {
     snakeSections[i].x = snakeSections[i].x + (directions[i].x * 65);
     snakeSections[i].y = snakeSections[i].y + (directions[i].y * 65);
   }
