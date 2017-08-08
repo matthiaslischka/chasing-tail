@@ -49,7 +49,7 @@ game.update = function () {
 
 game.move = function () {
 
-  playerPosition.add(direction.x * 65, direction.y * 65);
+  playerPosition.add(direction.x * snakeHead.width, direction.y * snakeHead.height);
   snakeHead.x = playerPosition.x;
   snakeHead.y = playerPosition.y;
 
@@ -59,8 +59,8 @@ game.move = function () {
     }
 
   for (var i = 0; i < numberOfSnakeSections; i++) {
-    snakeSections[i].x = snakeSections[i].x + (directions[i].x * 65);
-    snakeSections[i].y = snakeSections[i].y + (directions[i].y * 65);
+    snakeSections[i].x = snakeSections[i].x + (directions[i].x * snakeSections[i].width);
+    snakeSections[i].y = snakeSections[i].y + (directions[i].y * snakeSections[i].height);
   }
 
   directions.pop();
