@@ -8,6 +8,17 @@ var snakeSections = new Array();
 var directions = new Array();
 var numberOfSnakeSections;
 
+var level = [
+  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+  [1, 0, 1, 0, 0, 0, 0, 0, 0, 1],
+  [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+  [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+  [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+  [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+  [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+];
+
 game.create = function () {
   game.world.setBounds(0, 0, 800, 600);
   game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -18,7 +29,7 @@ game.create = function () {
 
   playerPosition = new Phaser.Point(400, 300);
   direction = new Phaser.Point(0, 0);
-  numberOfSnakeSections = 2;
+  numberOfSnakeSections = 10;
 
   for (var i = 0; i < numberOfSnakeSections; i++) {
     snakeSections[i] = game.add.sprite(400, 300, 'mushroom');
@@ -28,8 +39,21 @@ game.create = function () {
     this.physics.arcade.enable(snakeSections[i]);
   }
 
+  game.drawLevel();
+
+
   game.time.events.loop(Phaser.Timer.QUARTER, game.move, this);
 };
+
+game.drawLevel = function () {
+  for (var y = 0; y < level.length; y++) {
+    for (var x = 0; x < level[0].length; x++) {
+      if (level[y][x] == 1) {
+        game.add.sprite((x + 1) * 64, (y + 1) * 64, 'mushroom');
+      }
+    }
+  }
+}
 
 game.update = function () {
 
@@ -53,15 +77,15 @@ game.move = function () {
   snakeHead.x = playerPosition.x;
   snakeHead.y = playerPosition.y;
 
-  if (direction.x != 0 || direction.y != 0)
-    if (this.physics.arcade.collide(snakeHead, snakeSections)) {
-      alert("Aua");
-    }
-
   for (var i = 0; i < numberOfSnakeSections; i++) {
     snakeSections[i].x = snakeSections[i].x + (directions[i].x * snakeSections[i].width);
     snakeSections[i].y = snakeSections[i].y + (directions[i].y * snakeSections[i].height);
   }
+
+  if (direction.x != 0 || direction.y != 0)
+    if (this.physics.arcade.collide(snakeHead, snakeSections)) {
+      alert("Aua");
+    }
 
   directions.pop();
   directions.unshift(new Phaser.Point(direction.x, direction.y));
