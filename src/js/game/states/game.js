@@ -95,7 +95,7 @@ game.move = function () {
     }
 
     if (this.physics.arcade.collide(snakeHead, levelBlocksGroup)) {
-      alert("Level AUA");
+      game.state.start('boot');
     }
   }
 
