@@ -12,14 +12,15 @@ var level = [
   [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
   [1, 0, 1, 0, 0, 0, 0, 0, 0, 1],
   [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+  [1, 0, 0, 0, 2, 0, 0, 0, 0, 1],
   [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-  [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-  [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+  [1, 0, 0, 0, 0, 0, 2, 0, 0, 1],
   [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
   [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 ];
 
 var levelBlocksGroup;
+var foodGroup;
 
 game.create = function () {
   game.world.setBounds(0, 0, 800, 600);
@@ -50,6 +51,8 @@ game.create = function () {
 
 game.drawLevel = function () {
   levelBlocksGroup = game.add.group();
+  foodGroup = game.add.group();
+
   for (var y = 0; y < level.length; y++) {
     for (var x = 0; x < level[0].length; x++) {
       if (level[y][x] == 1) {
@@ -57,11 +60,23 @@ game.drawLevel = function () {
         game.physics.arcade.enable(wallSprite);
         levelBlocksGroup.add(wallSprite);
       }
+
+      if (level[y][x] == 2) {
+        var foodSprite = game.add.sprite((x + 1) * 64, (y + 1) * 64, 'apple');
+        game.physics.arcade.enable(foodSprite);
+        foodGroup.add(foodSprite);
+      }
     }
   }
 }
 
 game.update = function () {
+
+  game.physics.arcade.overlap(snakeHead, foodGroup, foodCollisionHandler, null, this);
+
+  if (this.physics.arcade.overlap(snakeHead, levelBlocksGroup)) {
+    game.state.start('boot');
+  }
 
   if (cursors.up.isDown && direction.y != 1) {
     direction = new Phaser.Point(0, -1);
@@ -89,18 +104,17 @@ game.move = function () {
   }
 
   if (direction.x != 0 || direction.y != 0) {
-
-    if (this.physics.arcade.collide(snakeHead, snakeSections)) {
+    if (this.physics.arcade.overlap(snakeHead, snakeSections)) {
       alert("Snake AUA");
-    }
-
-    if (this.physics.arcade.collide(snakeHead, levelBlocksGroup)) {
-      game.state.start('boot');
     }
   }
 
   directions.pop();
   directions.unshift(new Phaser.Point(direction.x, direction.y));
 };
+
+function foodCollisionHandler(snakeHead, food) {
+  food.kill();
+}
 
 module.exports = game;
