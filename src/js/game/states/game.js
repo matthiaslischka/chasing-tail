@@ -12,9 +12,9 @@ var level = [
   [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
   [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1],
   [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1],
-  [1, 0, 1, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 2, 0, 0, 1],
+  [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 2, 0, 0, 1],
   [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1],
-  [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1],
+  [1, 0, 1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1],
   [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1],
   [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1],
   [1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1],
@@ -114,12 +114,17 @@ game.update = function () {
 game.move = function () {
 
   playerPosition.add(direction.x * snakeHead.width, direction.y * snakeHead.height);
-  snakeHead.x = playerPosition.x;
-  snakeHead.y = playerPosition.y;
+  var playerTween = game.add.tween(snakeHead).to({
+    x: playerPosition.x,
+    y: playerPosition.y
+  }, 64, Phaser.Easing.Linear.None, true);
 
   for (var i = 0; i < numberOfSnakeSections; i++) {
-    snakeSections[i].x = snakeSections[i].x + (directions[i].x * snakeSections[i].width);
-    snakeSections[i].y = snakeSections[i].y + (directions[i].y * snakeSections[i].height);
+
+    var snakeSectionTween = game.add.tween(snakeSections[i]).to({
+      x: snakeSections[i].x + (directions[i].x * snakeSections[i].width),
+      y: snakeSections[i].y + (directions[i].y * snakeSections[i].height)
+    }, 64, Phaser.Easing.Linear.None, true);
   }
 
   if (direction.x != 0 || direction.y != 0) {
