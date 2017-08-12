@@ -36,6 +36,7 @@ var foodGroup;
 var text;
 
 game.create = function () {
+  ended = false;
   game.world.setBounds(0, 0, 8000, 8000);
   game.physics.startSystem(Phaser.Physics.ARCADE);
   cursors = game.input.keyboard.createCursorKeys();
@@ -95,14 +96,22 @@ game.drawLevel = function () {
   }
 }
 
+var ended = false;
+
 game.update = function () {
 
   text.text = foodGroup.total + " to go!";
 
+  if (ended == true)
+    return;
+
   game.physics.arcade.overlap(snakeHead, foodGroup, foodCollisionHandler, null, this);
 
   if (this.physics.arcade.overlap(snakeHead, levelBlocksGroup)) {
-    game.state.start('boot');
+    game.camera.shake(0.05, 500);
+    direction = new Phaser.Point(0, 0);
+    ended = true;
+    game.camera.onShakeComplete.add(function () { game.state.start('boot'); }, this);
   }
 
   if (cursors.up.isDown && direction.y != 1) {
