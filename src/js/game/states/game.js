@@ -100,7 +100,10 @@ var ended = false;
 
 game.update = function () {
 
-  text.text = foodGroup.total + " to go!";
+  if (foodGroup.total === 0)
+    text.text = "NOW GO CHASE YOUR TAIL!";
+  else
+    text.text = foodGroup.total + " to go!";
 
   if (ended == true)
     return;
@@ -147,6 +150,9 @@ game.move = function () {
   if (direction.x != 0 || direction.y != 0) {
     if (this.physics.arcade.overlap(snakeHead, snakeSections)) {
       alert("Snake AUA");
+      if (foodGroup.total === 0 && this.physics.arcade.overlap(snakeHead, snakeSections[snakeSections.length - 1])) {
+        alert("YOU WON!");
+      }
     }
   }
 
